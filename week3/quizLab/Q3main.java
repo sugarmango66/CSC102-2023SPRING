@@ -27,19 +27,19 @@ public class Q3main {
     public static void main(String[] args) {
         //获取3组输入, 用以创建对象
         Scanner sc = new Scanner(System.in);
-        ArrayList<Person> persons = new ArrayList<>();
+        ArrayList<Person2> persons = new ArrayList<>();
         
         for (int i = 0; i < 3; ++i) {
             int age = sc.nextInt();
             String name = sc.next();
-            persons.add(new Person(name, age));
+            persons.add(new Person2(name, age));
         }
         
-        Person p0 = persons.get(0);
-        Person p1 = persons.get(1);
-        Person p2 = persons.get(2);
+        Person2 p0 = persons.get(0);
+        Person2 p1 = persons.get(1);
+        Person2 p2 = persons.get(2);
         //调用泛型方法
-        Person res = chooseItem(p0, p1, p2);
+        Person2 res = chooseItem(p0, p1, p2);
         System.out.println("最小的对象是" + res);
     }
     //泛型方法-找出最小值
@@ -57,18 +57,18 @@ public class Q3main {
 }
 
 
-class Person implements Comparable<Person> {
+class Person2 implements Comparable<Person2> {
     //私有字段
     private String name;
     private int age;
     //构造器
-    public Person(String name, int age) {
+    public Person2(String name, int age) {
         this.name = name;
         this.age = age;
     }
     //重写方法
     @Override
-    public int compareTo(Person other) {
+    public int compareTo(Person2 other) {
         // TODO Auto-generated method stub
         if(this.age > other.age) {
             return 1;
