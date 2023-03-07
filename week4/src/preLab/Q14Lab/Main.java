@@ -22,14 +22,13 @@ class LinkedList {
     /*
     补全链表类的两个成员变量和一个构造器
      */
-    public Node head;
-    public Node tail;
+    private Node head;
+    private Node tail;
     //初始化为空链表
     public LinkedList() {
         this.head = null;
         this.tail = null;
     }
-
     //append方法会在链表 末尾 插入节点
     public void append(Node newNode) {
 
@@ -47,8 +46,6 @@ class LinkedList {
         }
         tail = newNode;
     }
-
-
     //prepend方法会在链表 开头 插入节点
     public void prepend(Node newNode) {
         /*
@@ -65,8 +62,6 @@ class LinkedList {
             head = newNode;
         }
     }
-
-
     // insertAfter方法能在链表 中间/结尾 插入节点
     // 这个方法获取的参数是：1.currNode：代表插入位置的前一个节点；2.要插入的节点
     public void insertAfter(Node currentNode, Node newNode) {
@@ -86,9 +81,7 @@ class LinkedList {
             newNode.next = currentNode.next;
             currentNode.next = newNode;
         }
-
     }
-
     public void printList() {
     /*
     用一个循环打印链表，被打印的东西是每个节点的数据
