@@ -90,19 +90,34 @@ public class LinkedList {
 //        }
 //    }
     public void reverse() {
-        //方法reverse
-        ArrayList<Integer> arr = new ArrayList<>();
-        //依次取出节点值 存入arr
-        Node curr = head;
-        while (curr != null) {
-            arr.add(curr.elem);
-            curr = curr.next;
+        //借鉴gpt
+        if (head == null || head.next == null) {
+            return;
         }
-        //清空链表 倒序加入arr元素
-        head = null;
-        for (int i = arr.size()-1; i >= 0; i--) {
-            add(arr.get(i));
+        Node prev = null;//代表curr原来的上一个节点
+        Node current = head;
+        Node next = null;//储存curr原来的下一个节点
+        while (current != null) {
+            next = current.next;//保存原curr.next到临时变量 因为要断掉原指向
+            current.next = prev;//改变curr的指向 即反转
+            prev = current;//后移一个节点 以便循环
+            current = next;//后移一个节点 以便循环
         }
+        tail = head;
+        head = prev;
+//        //方法reverse——借助动态数组的绕道写法
+//        ArrayList<Integer> arr = new ArrayList<>();
+//        //依次取出节点值 存入arr
+//        Node curr = head;
+//        while (curr != null) {
+//            arr.add(curr.elem);
+//            curr = curr.next;
+//        }
+//        //清空链表 倒序加入arr元素
+//        head = null;
+//        for (int i = arr.size()-1; i >= 0; i--) {
+//            add(arr.get(i));
+//        }
     }
     public void print() {
         //方法print
