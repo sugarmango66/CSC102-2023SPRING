@@ -20,10 +20,11 @@ LinkedList类：
 如果链表为空或者只有一个节点，那么链表无变化。
 方法3：打印链表的方法print，每打印一个节点的数据就打印一个空格。
  */
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-class Node{
+class Node {
     /*
     在这里补全单链表的Node类，节点的数据类型是int。
     */
@@ -35,6 +36,7 @@ class Node{
         this.next = null;
     }
 }
+
 public class LinkedList {
     /*
     在这里补全LinkedList类
@@ -47,64 +49,50 @@ public class LinkedList {
         this.head = null;
         this.tail = null;
     }
+
     //方法add
     public void add(int data) {
         Node newNode = new Node(data);
         if (head == null) {
             head = newNode;
             tail = newNode;
-        }
-        else {
+        } else {
             tail.next = newNode;
             tail = newNode;
         }
     }
-    //方法删除返回tail
-//    public int removeLast() {
-//        Node temp = tail;
-//        if (head.next == null) {
-//            head = null;
-//            tail = null;
-//        }
-//        else {
-//            Node curr = head;
-//            while (curr.next != tail)
-//                curr = curr.next;
-//            tail = curr;
-//            tail.next = null;
-//        }
-//        return temp.elem;
-//    }
 
-//    public void reverse() {
-//        LinkedList res = new LinkedList();
-//        //依次将尾部节点add到新链表
-//        while (head != null) {
-//            res.add(removeLast());
-//        }
-//        //原链表已清空，依次加入反转后的节点
-//        Node resCurr = res.head;
-//        while (resCurr != null) {
-//            add(resCurr.elem);
-//            resCurr = resCurr.next;
-//        }
-//    }
     public void reverse() {
-        //借鉴gpt
-        if (head == null || head.next == null) {
-            return;
-        }
-        Node prev = null;//代表curr原来的上一个节点
-        Node current = head;
-        Node next = null;//储存curr原来的下一个节点
-        while (current != null) {
-            next = current.next;//保存原curr.next到临时变量 因为要断掉原指向
-            current.next = prev;//改变curr的指向 即反转
-            prev = current;//后移一个节点 以便循环
-            current = next;//后移一个节点 以便循环
+        //update after Jasmine讲解
+//        Node newTail = head;
+        Node reversedListHead = null;
+        Node curr = head;
+        while (curr != null) {
+            Node temp = curr.next;
+            curr.next = reversedListHead;
+            reversedListHead = curr;
+            curr = temp;
         }
         tail = head;
-        head = prev;
+        head = reversedListHead;
+
+
+        //借鉴gpt
+//        if (head == null || head.next == null) {
+//            return;
+//        }
+//        Node prev = null;//代表curr原来的上一个节点
+//        Node current = head;
+//        Node next = null;//储存curr原来的下一个节点
+//        while (current != null) {
+//            next = current.next;//保存原curr.next到临时变量 因为要断掉原指向
+//            current.next = prev;//改变curr的指向 即反转
+//            prev = current;//后移一个节点 以便循环
+//            current = next;//后移一个节点 以便循环
+//        }
+//        tail = head;
+//        head = prev;
+
 //        //方法reverse——借助动态数组的绕道写法
 //        ArrayList<Integer> arr = new ArrayList<>();
 //        //依次取出节点值 存入arr
@@ -119,6 +107,7 @@ public class LinkedList {
 //            add(arr.get(i));
 //        }
     }
+
     public void print() {
         //方法print
         Node curr = head;
@@ -129,10 +118,10 @@ public class LinkedList {
         System.out.println();
     }
 
-    public static void main (String[] args){
+    public static void main(String[] args) {
         Scanner scnr = new Scanner(System.in);
         LinkedList myList = new LinkedList();
-        while(scnr.hasNextInt()){
+        while (scnr.hasNextInt()) {
             int val = scnr.nextInt();
             myList.add(val);
         }

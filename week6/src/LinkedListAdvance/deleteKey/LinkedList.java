@@ -50,17 +50,16 @@ public class LinkedList{
         }
 
         //head处理完的前提下 对非空链表才操作
-        if (head != null) {
-            Node curr = head;
-            while (curr.next != null) {
-                //curr.next不匹配目标 则curr后移
-                if (curr.next.data != key)
-                    curr = curr.next;
-                else {
-                    //当遇到目标匹配值，连续对比直到不匹配
-                    while (curr.next != null && curr.next.data == key) {
-                        curr.next = curr.next.next;
-                    }
+        if (head == null) return;
+        Node curr = head;
+        while (curr.next != null) {
+            //curr.next不匹配目标 则curr后移
+            if (curr.next.data != key)
+                curr = curr.next;
+            else {
+                //当遇到目标匹配值，连续对比直到不匹配
+                while (curr.next != null && curr.next.data == key) {
+                    curr.next = curr.next.next;
                 }
             }
         }
