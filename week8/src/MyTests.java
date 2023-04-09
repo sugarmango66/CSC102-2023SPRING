@@ -56,5 +56,36 @@ public class MyTests {
         assertThrows(IllegalArgumentException.class, () -> Parentheses.isValid("[=]"));
     }
 
+    /*
+     *first commit fail following test case (expected-false, got-true)
+     * (()
+     * (((
+     * [
+     * (
+     */
+    @Test
+    public void isValid_testMoreLeft1() {
+        boolean res = Parentheses.isValid("(((");
+        assertFalse(res);
+    }
+
+    @Test
+    public void isValid_testMoreLeft2() {
+        boolean res = Parentheses.isValid("(()");
+        assertFalse(res);
+    }
+
+    @Test
+    public void isValid_testSingleLeft1() {
+        boolean res = Parentheses.isValid("(");
+        assertFalse(res);
+    }
+
+    @Test
+    public void isValid_testSingleLeft2() {
+        boolean res = Parentheses.isValid("[");
+        assertFalse(res);
+    }
+
 
 }

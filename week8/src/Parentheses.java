@@ -19,7 +19,7 @@ public class Parentheses {
                 throw new IllegalArgumentException("invalid token");
             }
         }
-        return true;
+        return stack.empty();//!!! all match means no remaining left type
     }
 
     public static boolean isLeftType(char c) {
