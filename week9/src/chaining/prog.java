@@ -1,4 +1,4 @@
-package DIYHashTable;
+package chaining;
 
 import java.util.Scanner;
 
