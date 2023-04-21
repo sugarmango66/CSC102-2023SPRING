@@ -28,15 +28,24 @@ class HashNode {
     }
 }
 
-class QueueNode {
-    int key;
-    int j;
-
-    public QueueNode(int key, int j) {
-        this.key = key;
-        this.j = j;
-    }
-}
+//class QueueNode {
+//    int key;
+//    int j;
+//
+//    public QueueNode(int key, int j) {
+//        this.key = key;
+//        this.j = j;
+//    }
+//}
+//class LastPass {
+//    int key;
+//    int j;
+//
+//    public LastPass(int key, int j) {
+//        this.key = key;
+//        this.j = j;
+//    }
+//}
 
 public class QuadraticProbingHashTable extends HashTable {
     //QuadraticProbingHashTable类是一个实现了二次探测的哈希表类。
@@ -48,12 +57,14 @@ public class QuadraticProbingHashTable extends HashTable {
 
     private int capacity;
     private HashNode[] table;
-    private Queue<QueueNode>[] refTable;
+//    private Queue<QueueNode>[] refTable;
+    private Integer[] refTable;
 
     public QuadraticProbingHashTable(int capacity) {
         this.capacity = capacity;
         table = new HashNode[capacity];
-        refTable = new Queue[capacity];
+//        refTable = new Queue[capacity];
+        refTable = new Integer[capacity];
     }
 
     @Override
@@ -73,7 +84,7 @@ public class QuadraticProbingHashTable extends HashTable {
         int origin = hash(key);
         int i = hash(key);
         int j = 1;
-        while (table[i] != null) {
+        while (table[i] != null && j<capacity*2) {
             //插入的键已经存在
             if (table[i].key == key) {
                 //更改哈希表中该键的值
@@ -94,9 +105,7 @@ public class QuadraticProbingHashTable extends HashTable {
         i = hash(key);
         j = 1;
         while (table[i] != null) {
-
-            refTable[i] = new LinkedList<>();
-            refTable[i].offer(new QueueNode(key, j));//store the key that wants to fill but cannot
+            refTable[i] = key;
             i = hash(origin + j + j * j);
             j++;
         }
@@ -128,7 +137,8 @@ public class QuadraticProbingHashTable extends HashTable {
                 return table[i].value;
             } else {
                 //对never found empty bucket的解决方法
-                if (refTable[i] == null || refTable[i].isEmpty()) {
+//                if (refTable[i] == null || refTable[i].isEmpty()) {
+                if (refTable[i] == null) {
                     break;
                 }
                 i = hash(hash(key) + j + j * j);
@@ -169,77 +179,125 @@ public class QuadraticProbingHashTable extends HashTable {
         return false;
     }
 
-    public void recover(int i) {
+//    public void recover(int i) {
+//
+//        Queue<QueueNode> passes = refTable[i];
+//        if (passes == null || passes.isEmpty()) {
+//            return;
+//        }
+//        QueueNode queueNode = passes.poll();
+//        int nextKey = queueNode.key;
+//        int j = queueNode.j;
+//        int posOfNextKey = hash(hash(nextKey) + j + j * j);
+//        String nextValue = table[posOfNextKey].value;//!!! search(nextKey) not work because table[i] == null
+//        table[i] = new HashNode(nextKey, nextValue);
+//        table[posOfNextKey] = null;
+//        recover(posOfNextKey);
+//    }
 
-        Queue<QueueNode> passes = refTable[i];
-        if (passes == null || passes.isEmpty()) {
+    //not necessary to use Queue, this is how simplify
+    public void recover(int i) {
+        if (refTable[i] == null) {
             return;
         }
-        QueueNode queueNode = passes.poll();
-        int nextKey = queueNode.key;
-        int j = queueNode.j;
-        int posOfNextKey = hash(hash(nextKey) + j + j * j);
+        int nextKey = refTable[i];
+        int j = 1;
+        int posOfNextKey;
+        while (true) {
+            posOfNextKey = hash(hash(nextKey) + j + j * j);
+            if (table[posOfNextKey] == null) {
+                j++;
+                continue;
+            }
+            if (table[posOfNextKey].key == nextKey) {
+                break;
+            }
+            j++;
+        }
         String nextValue = table[posOfNextKey].value;//!!! search(nextKey) not work because table[i] == null
-        table[i] = new HashNode(nextKey, nextValue);
-        table[posOfNextKey] = null;
-        recover(posOfNextKey);
-    }
 
-//    public void shift(int index) {
-//        int j = 1;
-//        int shiftAmount = j + j * j;
-//        HashNode node = null;
-//        while ((node = table[hash(index + shiftAmount)]) != null && j<capacity*2) {
-//            int preferredIndex = hash(node.key);
-//            if (hash(index) == preferredIndex) {
-//                table[index] = node;
-//                table[hash(index + shiftAmount)] = null;
-//                index = hash(index + shiftAmount);
-//                shift(index);
-//                break;
-//            } else {
-//                j++;
-//            }
-//        }
-//    }
+        if (hash(nextKey) == i) {//nextKey 是 i的同二次序列
+            table[i] = new HashNode(nextKey, nextValue);
+            refTable[i] = refTable[posOfNextKey];//!!! must update, otherwise fall in dead loop
+
+            table[posOfNextKey] = null;
+            recover(posOfNextKey);
+        }
+        else {//23 不是 5的同二次序列
+            //rehash nextkey
+            int idx = hash(nextKey);
+            int origin = idx;
+            int k = 1;
+            while (table[idx] != null) {
+                if (idx == posOfNextKey) {
+                    break;
+                }
+                refTable[idx] = nextKey;
+                idx = hash(origin + k + k * k);
+                k++;
+            }
+            if (idx != posOfNextKey) {
+                table[idx] = new HashNode(nextKey, nextValue);
+                table[posOfNextKey] = null;
+                recover(posOfNextKey);
+            }
+        }
+    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         QuadraticProbingHashTable hashTable = new QuadraticProbingHashTable(10);
 
-        hashTable.insert(12, "apple");
-        hashTable.insert(34, "orange");
-        hashTable.insert(72, "banana");
-        hashTable.insert(110, "peach");
-        hashTable.insert(199, "strawberry");
-//        hashTable.insert(44,"good");
+        hashTable.insert(13, "swim");
+        hashTable.insert(15, "jump");
+        hashTable.insert(23, "climb");
+//        hashTable.insert(25, "run");
+        hashTable.insert(18, "walk");
+        hashTable.insert(20,"sleep");
         /**
-         * 0：peach，110
+         *
+         * 0：sleep，20
          * 1：空
-         * 2：apple，12
-         * 3：空
-         * 4：orange，34
-         * 5：空
+         * 2：空
+         * 3：swim，13
+         * 4：空
+         * 5：jump，15
          * 6：空
          * 7：空
-         * 8：banana，72
-         * 9：strawberry，199
+         * 8：walk，18
+         * 9：climb，23
          */
 
-        System.out.println(hashTable.remove(34));
+        System.out.println(hashTable.remove(13));
         /**
-         * 0：peach，110
+         * expected:
+         * 0：sleep，20
          * 1：空
-         * 2：apple，12
-         * 3：空
-         * 4：banana，72
+         * 2：空
+         * 3：climb，23
+         * 4：空
+         * 5：jump，15
+         * 6：空
+         * 7：空
+         * 8：walk，18
+         * 9：空
+         */
+        System.out.println(hashTable.remove(15));
+        /**
+         * expected:
+         * 0：sleep，20
+         * 1：空
+         * 2：空
+         * 3：climb，23
+         * 4：空
          * 5：空
          * 6：空
          * 7：空
-         * 8：空
-         * 9：strawberry，199
+         * 8：walk，18
+         * 9：空
          */
-        System.out.println(hashTable.search(72));
+
+        System.out.println(hashTable.search(23));
 
 //        int n = scanner.nextInt();
 //        for (int i = 0; i < n; i++) {
